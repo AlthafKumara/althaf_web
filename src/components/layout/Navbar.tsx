@@ -7,7 +7,7 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 w-full border-b border-neutral-800 bg-background/80 backdrop-blur-md">
       <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
         <Link href="/" className="text-xl font-bold tracking-tighter text-text-primary hover:text-primary transition-colors">
-          Dev<span className="text-primary">Portfolio</span>
+          Althaf<span className="text-primary">Kumara</span>
         </Link>
         <div className="hidden md:flex space-x-6 text-sm font-medium text-text-secondary">
           <Link href="#about" className="hover:text-primary transition-colors">About</Link>
@@ -16,7 +16,7 @@ export default function Navbar() {
           <Link href="#activity" className="hover:text-primary transition-colors">Activity</Link>
         </div>
         <div className="flex items-center space-x-4">
-          <Link href="https://github.com" target="_blank" className="text-text-secondary hover:text-primary transition-colors">
+          <Link href="https://github.com/AlthafKumara" target="_blank" className="text-text-secondary hover:text-primary transition-colors">
             <FaGithub className="w-5 h-5" />
           </Link>
           <Link href="https://linkedin.com" target="_blank" className="text-text-secondary hover:text-primary transition-colors">

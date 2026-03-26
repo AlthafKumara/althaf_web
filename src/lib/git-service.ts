@@ -6,42 +6,42 @@ export interface CommitLog {
   url: string;
 }
 
-export async function fetchGitHubActivity(token: string): Promise<CommitLog[]> {
-  try {
-    const headers: Record<string, string> = {
-      Accept: 'application/vnd.github.v3+json'
-    };
-    if (token) headers.Authorization = `Token ${token}`;
+export async function fetchGitHubActivity(username: string, token: string): Promise<CommitLog[]> {
+  const headers: Record<string, string> = {
+    Accept: 'application/vnd.github.v3+json',
+  };
 
-    const response = await fetch(`https://api.github.com/users/AlthafKumara/events?per_page=100`, {
-      headers,
-      next: { revalidate: 1800 },
-    });
+  if (token) headers.Authorization = `Bearer ${token}`;
 
-    if (!response.ok) return [];
+  let page = 1;
+  let allEvents: any[] = [];
 
-    const events = await response.json();
-    const pushEvents = events.filter((e: any) => e.type === 'PushEvent');
+  while (page <= 3) { // max 300 events
+    const res = await fetch(
+      `https://api.github.com/users/${username}/events?per_page=100&page=${page}`,
+      { headers }
+    );
 
-    const commits: CommitLog[] = [];
-    for (const event of pushEvents) {
-      if (event.payload && event.payload.commits) {
-        for (const commit of event.payload.commits) {
-          commits.push({
-            source: 'github',
-            repo: event.repo.name,
-            message: commit.message,
-            date: event.created_at,
-            url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-          });
-        }
-      }
-    }
-    return commits;
-  } catch (err) {
-    console.error('Error fetching GitHub activity:', err);
-    return [];
+    if (!res.ok) break;
+
+    const data = await res.json();
+    if (data.length === 0) break;
+
+    allEvents = [...allEvents, ...data];
+    page++;
   }
+
+  const pushEvents = allEvents.filter(e => e.type === 'PushEvent');
+
+  return pushEvents.flatMap(event =>
+    (event.payload?.commits || []).map((commit: any) => ({
+      source: 'github',
+      repo: event.repo.name,
+      message: commit.message,
+      date: event.created_at,
+      url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
+    }))
+  );
 }
 
 export async function fetchGitLabActivity(userId: string, token: string, year: number): Promise<CommitLog[]> {
@@ -90,7 +90,7 @@ export async function getAggregatedActivityForYear(year: number): Promise<Commit
   // GitHub doesn't easily paginate past 90 days on REST event API, but we'll fetch what we can.
   // We'll filter the results manually to match the requested year.
   const [ghCommits, glCommits] = await Promise.all([
-    fetchGitHubActivity(ghToken),
+    fetchGitHubActivity(ghUsername, ghToken),
     (glToken && glUserId) ? fetchGitLabActivity(glUserId, glToken, year) : Promise.resolve([])
   ]);
 

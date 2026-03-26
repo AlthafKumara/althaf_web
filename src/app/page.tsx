@@ -11,11 +11,11 @@ export default function Home() {
       <About />
       <Skills />
       <Projects />
-      
+
       <ActivityDashboard />
-      
+
       <footer className="py-8 border-t border-neutral-800 text-center text-text-secondary text-sm">
-        <p>© {new Date().getFullYear()} Professional Developer Portfolio. Built with Next.js & Supabase.</p>
+        <p>© {new Date().getFullYear()} Althaf Kumara Website.</p>
       </footer>
     </div>
   );
