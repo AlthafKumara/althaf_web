@@ -1,18 +1,11 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { authRepository } from "@/features/auth/repositories/auth.repository";
+import { useLogoutController } from "@/features/auth";
 import { LogOut, MonitorSmartphone } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-
-  const handleLogout = async () => {
-    await authRepository.signOut();
-    router.push("/login");
-    router.refresh();
-  };
+  const { handleLogout } = useLogoutController();
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
@@ -46,3 +39,4 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
+

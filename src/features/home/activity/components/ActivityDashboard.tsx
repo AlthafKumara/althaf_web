@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { GitCommit } from "lucide-react";
 import { FaGithub, FaGitlab } from "react-icons/fa";
 import { HeatmapGrid } from "./HeatmapGrid";
-import { useActivityController } from "@/features/home/activity/controllers/use_activity.controller";
+import { useActivityController } from "../controllers/use_activity.controller";
 
 const YEARS = [2026, 2025, 2024];
 

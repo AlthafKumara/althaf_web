@@ -15,10 +15,10 @@ export default function About() {
           className="max-w-3xl mx-auto space-y-6 text-center mb-16"
         >
           <h2 className="text-3xl md:text-5xl font-bold text-text-primary tracking-tight">
-            Background & <span className="text-primary">Philosophy</span>
+            Background &amp; <span className="text-primary">Philosophy</span>
           </h2>
           <p className="text-text-secondary text-lg leading-relaxed">
-            I approach mobile and full-stack development as an ecosystem. It’s not just about building a beautiful UI, but ensuring the data layer, backend logic, and user experience work together seamlessly. My workflow often integrates WSL2, Docker, and modern CI/CD to maintain high-quality delivery.
+            I approach mobile and full-stack development as an ecosystem. It&apos;s not just about building a beautiful UI, but ensuring the data layer, backend logic, and user experience work together seamlessly. My workflow often integrates WSL2, Docker, and modern CI/CD to maintain high-quality delivery.
           </p>
         </motion.div>
 

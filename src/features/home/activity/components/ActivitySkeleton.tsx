@@ -1,5 +1,3 @@
-import { FaGithub, FaGitlab } from "react-icons/fa";
-
 export default function ActivitySkeleton() {
   return (
     <section id="activity" className="py-24">

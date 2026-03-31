@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
-import { useProjectsController } from "@/features/home/projects/controllers/use_projects.controller";
+import { useProjectsController } from "../controllers/use_projects.controller";
 
 export default function Projects() {
   const { projects, isLoading, error } = useProjectsController();

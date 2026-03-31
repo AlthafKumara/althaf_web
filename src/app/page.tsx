@@ -1,8 +1,8 @@
-import Hero from "@/components/home/Hero";
-import About from "@/components/home/About";
-import Skills from "@/components/home/Skills";
-import Projects from "@/components/home/Projects";
-import ActivityDashboard from "@/components/activity/ActivityDashboard";
+import { Hero } from "@/features/home/hero";
+import { About } from "@/features/home/about";
+import { Skills } from "@/features/home/skills";
+import { Projects } from "@/features/home/projects";
+import { ActivityDashboard } from "@/features/home/activity";
 
 export default function Home() {
   return (

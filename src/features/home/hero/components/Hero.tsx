@@ -26,11 +26,11 @@ export default function Hero() {
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-text-primary leading-tight">
-            Crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">Robust</span> Apps & Scalable Systems.
+            Crafting <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">Robust</span> Apps &amp; Scalable Systems.
           </h1>
           
           <p className="text-lg md:text-xl text-text-secondary max-w-2xl mx-auto md:mx-0 leading-relaxed">
-            I am a Software Engineer specializing in Flutter & Dart. Transforming complex requirements into high-performance, functional applications with deep integrations like Supabase, Docker, and REST APIs.
+            I am a Software Engineer specializing in Flutter &amp; Dart. Transforming complex requirements into high-performance, functional applications with deep integrations like Supabase, Docker, and REST APIs.
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4 pt-4">
@@ -84,7 +84,7 @@ export default function Hero() {
               className="absolute -bottom-6 -left-6 px-4 py-2 bg-background border border-neutral-800 rounded-xl shadow-xl flex items-center gap-2"
             >
               <div className="w-3 h-3 rounded-full bg-blue-500" />
-              <span className="text-xs font-bold font-mono">Next.js & Supabase</span>
+              <span className="text-xs font-bold font-mono">Next.js &amp; Supabase</span>
             </motion.div>
           </div>
         </motion.div>

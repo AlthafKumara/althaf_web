@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useSkillsController } from "@/features/home/skills/controllers/use_skills.controller";
+import { useSkillsController } from "../controllers/use_skills.controller";
 import { SkillCategory } from "@/shared/models/skill.model";
 
 const categories: SkillCategory[] = ['mobile', 'backend', 'devops', 'tools'];
