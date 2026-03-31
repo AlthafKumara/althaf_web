@@ -1,36 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import { motion } from "framer-motion";
 import { Lock } from "lucide-react";
+import { useLoginController } from "@/features/auth/controllers/use_login.controller";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      router.push("/admin");
-      router.refresh();
-    }
-  };
+  const { email, password, isLoading, error, setEmail, setPassword, handleLogin } = useLoginController();
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -78,10 +53,10 @@ export default function LoginPage() {
           </div>
           <button
             type="submit"
-            disabled={loading}
+            disabled={isLoading}
             className="w-full py-4 bg-primary text-background font-bold text-lg rounded-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
           >
-            {loading ? "Authenticating..." : "Login"}
+            {isLoading ? "Authenticating..." : "Login"}
           </button>
         </form>
       </motion.div>

@@ -1,31 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import { useSkillsController } from "@/features/home/skills/controllers/use_skills.controller";
+import { SkillCategory } from "@/shared/models/skill.model";
 
-interface Skill {
-  id: string;
-  name: string;
-  category: 'mobile' | 'backend' | 'devops' | 'tools';
-}
+const categories: SkillCategory[] = ['mobile', 'backend', 'devops', 'tools'];
 
 export default function Skills() {
-  const [skills, setSkills] = useState<Skill[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadSkills() {
-      const { data, error } = await supabase.from('skills').select('*').eq('is_active', true);
-      if (!error && data) {
-        setSkills(data);
-      }
-      setLoading(false);
-    }
-    loadSkills();
-  }, []);
-
-  const categories = ['mobile', 'backend', 'devops', 'tools'];
+  const { skills, isLoading, error } = useSkillsController();
 
   return (
     <section id="skills" className="py-24">
@@ -36,19 +18,21 @@ export default function Skills() {
           </h2>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="flex justify-center">
-             <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin" />
           </div>
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
         ) : skills.length === 0 ? (
           <div className="text-center text-text-secondary">Skills currently updating...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
             {categories.map((cat, idx) => {
-              const catSkills = skills.filter(s => s.category === cat);
+              const catSkills = skills.filter((s) => s.category === cat);
               if (catSkills.length === 0) return null;
               return (
-                <motion.div 
+                <motion.div
                   key={cat}
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
@@ -60,14 +44,14 @@ export default function Skills() {
                     {cat}
                   </h3>
                   <div className="flex flex-wrap gap-3">
-                    {catSkills.map(skill => (
+                    {catSkills.map((skill) => (
                       <span key={skill.id} className="px-4 py-2 bg-background border border-neutral-800 rounded-xl text-sm font-medium text-text-secondary hover:text-primary hover:border-primary/50 transition-colors cursor-default">
                         {skill.name}
                       </span>
                     ))}
                   </div>
                 </motion.div>
-              )
+              );
             })}
           </div>
         )}

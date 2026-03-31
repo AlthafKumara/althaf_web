@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
+import { authRepository } from "@/features/auth/repositories/auth.repository";
 import { LogOut, MonitorSmartphone } from "lucide-react";
 import Link from "next/link";
 
@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const router = useRouter();
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await authRepository.signOut();
     router.push("/login");
     router.refresh();
   };
@@ -21,7 +21,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <MonitorSmartphone className="w-8 h-8 text-primary" />
           <span className="text-xl font-bold text-text-primary">Admin Panel</span>
         </div>
-        
+
         <nav className="flex-1 space-y-2">
           <Link href="/admin" className="block px-4 py-3 rounded-xl bg-primary/10 text-primary font-medium">
             Dashboard
@@ -31,7 +31,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
         </nav>
 
-        <button 
+        <button
           onClick={handleLogout}
           className="mt-auto flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-500/10 text-red-500 rounded-xl hover:bg-red-500/20 transition-colors font-medium border border-red-500/20"
         >
@@ -39,7 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           Sign Out
         </button>
       </aside>
-      
+
       <main className="flex-1 p-6 md:p-12 overflow-y-auto max-h-screen">
         {children}
       </main>

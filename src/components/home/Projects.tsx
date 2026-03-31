@@ -1,35 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/lib/supabase";
 import { ExternalLink } from "lucide-react";
 import { FaGithub } from "react-icons/fa";
-
-interface Project {
-  id: string;
-  title: string;
-  description: string;
-  tags: string[];
-  image_url: string;
-  github_url: string;
-  demo_url: string;
-}
+import { useProjectsController } from "@/features/home/projects/controllers/use_projects.controller";
 
 export default function Projects() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchProjects() {
-      const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
-      if (!error && data) {
-        setProjects(data);
-      }
-      setLoading(false);
-    }
-    fetchProjects();
-  }, []);
+  const { projects, isLoading, error } = useProjectsController();
 
   return (
     <section id="projects" className="py-24 bg-surface/30 border-t border-neutral-800">
@@ -41,12 +18,14 @@ export default function Projects() {
           <p className="mt-4 text-text-secondary">A selection of my recent work and open source contributions.</p>
         </div>
 
-        {loading ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-             {[1,2,3].map(i => (
-               <div key={i} className="h-96 bg-surface animate-pulse rounded-2xl border border-neutral-800" />
-             ))}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-96 bg-surface animate-pulse rounded-2xl border border-neutral-800" />
+            ))}
           </div>
+        ) : error ? (
+          <div className="text-center text-red-500">{error}</div>
         ) : projects.length === 0 ? (
           <div className="text-center text-text-secondary">Projects are currently being populated.</div>
         ) : (
@@ -61,25 +40,29 @@ export default function Projects() {
                 className="group flex flex-col bg-background border border-neutral-800 rounded-2xl overflow-hidden hover:border-primary/40 transition-colors"
               >
                 <div className="relative h-48 w-full bg-surface overflow-hidden">
-                   {project.image_url ? (
-                     <img src={project.image_url} alt={project.title} className="object-cover w-full h-full opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500" />
-                   ) : (
-                     <div className="w-full h-full flex items-center justify-center font-mono text-neutral-600">No Image</div>
-                   )}
+                  {project.image_url ? (
+                    <img
+                      src={project.image_url}
+                      alt={project.title}
+                      className="object-cover w-full h-full opacity-80 group-hover:scale-105 group-hover:opacity-100 transition-all duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center font-mono text-neutral-600">No Image</div>
+                  )}
                 </div>
                 <div className="p-6 flex-grow flex flex-col">
                   <h3 className="text-xl font-bold text-text-primary mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
                   <p className="text-sm text-text-secondary mb-4 line-clamp-3">{project.description}</p>
-                  
+
                   <div className="flex flex-wrap gap-2 mb-6 mt-auto">
-                    {project.tags.slice(0, 3).map(tag => (
+                    {project.tags.slice(0, 3).map((tag) => (
                       <span key={tag} className="px-2 py-1 bg-surface border border-neutral-800 rounded-md text-xs text-text-secondary">{tag}</span>
                     ))}
                     {project.tags.length > 3 && (
-                       <span className="px-2 py-1 bg-surface border border-neutral-800 rounded-md text-xs text-text-secondary">+{project.tags.length - 3}</span>
+                      <span className="px-2 py-1 bg-surface border border-neutral-800 rounded-md text-xs text-text-secondary">+{project.tags.length - 3}</span>
                     )}
                   </div>
-                  
+
                   <div className="flex items-center gap-4 pt-4 border-t border-neutral-800">
                     {project.github_url && (
                       <a href={project.github_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm text-text-secondary hover:text-primary transition-colors">
