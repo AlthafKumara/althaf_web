@@ -1,16 +1,37 @@
+/**
+ * @fileoverview Root Layout — HTML Shell
+ *
+ * The absolute root layout of the application. This file is intentionally
+ * kept as THIN as possible — it only handles:
+ * 1. HTML `<html>` and `<body>` tags
+ * 2. Global font loading (Inter)
+ * 3. Global CSS import
+ * 4. SEO metadata
+ *
+ * Page-specific layouts (Navbar, footer, admin sidebar) are handled by
+ * nested layouts in their respective route groups:
+ * - `(public)/layout.tsx` → Navbar + DevAlert for public pages
+ * - `admin/layout.tsx` → Admin sidebar
+ *
+ * @module app/layout
+ */
+
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import DevAlert from "@/components/shared/DevAlert";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Althaf Kumara Web",
-  description: "Mobile Developer Specialist (Flutter/Dart) & Full-Stack Engineer",
+  description:
+    "Mobile Developer Specialist (Flutter/Dart) & Full-Stack Engineer",
 };
 
+/**
+ * Root HTML layout wrapper.
+ * All routes in the app inherit this shell.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -19,11 +40,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body className={`${inter.className} min-h-screen flex flex-col`}>
-        <Navbar />
-        <main className="flex-grow">
-          {children}
-        </main>
-        <DevAlert />
+        {children}
       </body>
     </html>
   );
