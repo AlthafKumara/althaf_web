@@ -43,7 +43,8 @@ import {
  */
 export async function fetchGitHubActivity(
   username: string,
-  token: string
+  token: string,
+  year: number
 ): Promise<CommitLog[]> {
   const headers: Record<string, string> = {
     Accept: "application/vnd.github.v3+json",
@@ -52,36 +53,31 @@ export async function fetchGitHubActivity(
   if (token) headers.Authorization = `Bearer ${token}`;
 
   let page = 1;
-  let allEvents: any[] = [];
+  let allItems: any[] = [];
 
-  // Paginate up to 3 pages (100 events each = max 300 events)
+  // Paginate up to 3 pages (100 items each = max 300 commits)
   while (page <= 3) {
     const res = await fetch(
-      `https://api.github.com/users/${username}/events?per_page=100&page=${page}`,
+      `https://api.github.com/search/commits?q=author:${username}+committer-date:${year}-01-01..${year}-12-31&sort=committer-date&order=desc&per_page=100&page=${page}`,
       { headers }
     );
 
     if (!res.ok) break;
 
     const data = await res.json();
-    if (data.length === 0) break;
+    if (!data.items || data.items.length === 0) break;
 
-    allEvents = [...allEvents, ...data];
+    allItems = [...allItems, ...data.items];
     page++;
   }
 
-  // Filter to only PushEvents and extract individual commits
-  const pushEvents = allEvents.filter((e) => e.type === "PushEvent");
-
-  return pushEvents.flatMap((event) =>
-    (event.payload?.commits || []).map((commit: any) => ({
-      source: "github" as const,
-      repo: event.repo.name,
-      message: commit.message,
-      date: event.created_at,
-      url: `https://github.com/${event.repo.name}/commit/${commit.sha}`,
-    }))
-  );
+  return allItems.map((item) => ({
+    source: "github" as const,
+    repo: item.repository?.name || "unknown",
+    message: item.commit?.message || "",
+    date: item.commit?.author?.date || item.commit?.committer?.date,
+    url: item.html_url,
+  }));
 }
 
 // ---------------------------------------------------------------------------
@@ -162,15 +158,15 @@ export async function getAggregatedActivityForYear(
   year: number
 ): Promise<CommitLog[]> {
   const [ghCommits, glCommits] = await Promise.all([
-    fetchGitHubActivity(GITHUB_USERNAME, GITHUB_TOKEN),
+    fetchGitHubActivity(GITHUB_USERNAME, GITHUB_TOKEN, year),
     GITLAB_TOKEN && GITLAB_USER_ID
       ? fetchGitLabActivity(GITLAB_USER_ID, GITLAB_TOKEN, year)
       : Promise.resolve([]),
   ]);
 
-  // Merge, filter to the requested year, and sort newest-first
+  // Merge, filter to the requested year (as a safeguard), and sort newest-first
   const allCommits = [...ghCommits, ...glCommits]
-    .filter((c) => new Date(c.date).getFullYear() === year)
+    .filter((c) => c.date && new Date(c.date).getFullYear() === year)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return allCommits;
